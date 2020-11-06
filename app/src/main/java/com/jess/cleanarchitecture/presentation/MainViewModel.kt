@@ -10,6 +10,7 @@ import com.jess.cleanarchitecture.data.entity.ItemEntity
 import com.jess.cleanarchitecture.data.entity.MovieEntity
 import com.jess.cleanarchitecture.domain.usecase.SearchMoveUseCase
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -21,6 +22,7 @@ class MainViewModel @ViewModelInject constructor(
     val list: LiveData<List<ItemEntity>> get() = _list
 
     fun search(query: String?) {
+
         if (query.isNullOrEmpty()) {
             return
         }

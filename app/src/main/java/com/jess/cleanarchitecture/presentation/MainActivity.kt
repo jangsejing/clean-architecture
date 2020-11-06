@@ -3,7 +3,9 @@ package com.jess.cleanarchitecture.presentation
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import com.jess.cleanarchitecture.R
 import com.jess.cleanarchitecture.common.adapter.BaseListAdapter
 import com.jess.cleanarchitecture.databinding.MainActivityBinding
@@ -31,12 +33,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun initView() {
         binding.rvMovie.adapter = adapter
+        binding.etSearch.addTextChangedListener {
+            viewModel.search(it.toString())
+        }
     }
 
     private fun initComponent() {
         binding.viewModel = viewModel
         viewModel.run {
-            search("mar")
+            list.observe(this@MainActivity, Observer {
+                adapter.submitList(it)
+            })
         }
     }
 }
