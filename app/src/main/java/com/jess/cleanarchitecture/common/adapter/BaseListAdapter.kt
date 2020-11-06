@@ -8,6 +8,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.jess.cleanarchitecture.BR
 
 class BaseListAdapter<T : Any>(
     @LayoutRes private val layoutId: Int,
@@ -49,8 +50,8 @@ class PayPfmStockSimpleViewHolder<T : Any?>(
 
     fun onBind(item: T?) {
         viewDataBinding.run {
-//            setVariable(BR.item, item)
-            viewDataBinding.executePendingBindings()
+            setVariable(BR.item, item)
+            executePendingBindings()
         }
     }
 }

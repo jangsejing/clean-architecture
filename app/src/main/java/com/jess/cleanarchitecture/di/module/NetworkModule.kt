@@ -1,6 +1,6 @@
 package com.jess.cleanarchitecture.di.module
 
-import com.jess.cleanarchitecture.NaverService
+import com.jess.cleanarchitecture.domain.repository.NaverService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,10 +13,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-/**
- * @author jess
- * @since 2020.06.12
- */
 @Module
 @InstallIn(ApplicationComponent::class)
 class NetworkModule {
