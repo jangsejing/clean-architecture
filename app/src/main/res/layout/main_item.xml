@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp"
+        android:padding="10dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -28,18 +28,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:text="@{item.title}"
+            android:textColor="@color/black"
             android:textSize="12sp"
             android:textStyle="bold"
+            bind:fromHtml="@{item.title}"
             tools:text="캡틴 마블" />
-
-        <!-- 서브 타이틀  -->
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="11sp"
-            bind:visibleOrGone="@{!TextUtils.isEmpty(item.subtitle)}"
-            tools:text="Captain Marvel" />
 
         <!-- 제작년도 -->
         <androidx.appcompat.widget.AppCompatTextView

@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil
+import com.jess.cleanarchitecture.common.coroutine.JessCoroutine
+import com.jess.cleanarchitecture.common.coroutine.JessCoroutineImpl
 import com.jess.cleanarchitecture.data.entity.ItemEntity
 import com.jess.cleanarchitecture.data.entity.MovieEntity
 import com.jess.cleanarchitecture.domain.usecase.SearchMoveUseCase
@@ -16,7 +18,7 @@ import timber.log.Timber
 
 class MainViewModel @ViewModelInject constructor(
     private val useCase: SearchMoveUseCase
-) : ViewModel() {
+) : ViewModel(), JessCoroutine by JessCoroutineImpl() {
 
     private val _list = MutableLiveData<List<ItemEntity>>()
     val list: LiveData<List<ItemEntity>> get() = _list
@@ -27,7 +29,7 @@ class MainViewModel @ViewModelInject constructor(
             return
         }
 
-        viewModelScope.launch {
+        viewModelScope.jessLaunch {
             useCase.invoke(query).apply {
                 _list.postValue(this.items)
             }
