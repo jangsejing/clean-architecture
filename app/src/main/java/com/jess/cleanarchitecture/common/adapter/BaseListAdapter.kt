@@ -13,18 +13,18 @@ import com.jess.cleanarchitecture.BR
 class BaseListAdapter<T : Any>(
     @LayoutRes private val layoutId: Int,
     diffCallback: DiffUtil.ItemCallback<T>
-) : ListAdapter<T, PayPfmStockSimpleViewHolder<T>>(diffCallback) {
+) : ListAdapter<T, ViewHolder<T>>(diffCallback) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): PayPfmStockSimpleViewHolder<T> {
+    ): ViewHolder<T> {
         require(layoutId > 0) { "Empty Layout Resource" }
         val dataBinding = createViewDataBinding(parent)
         return createViewHolder(dataBinding)
     }
 
-    override fun onBindViewHolder(holder: PayPfmStockSimpleViewHolder<T>, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder<T>, position: Int) {
         holder.onBind(getItem(position))
     }
 
@@ -37,14 +37,14 @@ class BaseListAdapter<T : Any>(
         )
     }
 
-    private fun createViewHolder(dataBinding: ViewDataBinding): PayPfmStockSimpleViewHolder<T> {
-        return PayPfmStockSimpleViewHolder(
+    private fun createViewHolder(dataBinding: ViewDataBinding): ViewHolder<T> {
+        return ViewHolder(
             dataBinding
         )
     }
 }
 
-class PayPfmStockSimpleViewHolder<T : Any?>(
+class ViewHolder<T : Any?>(
     private val viewDataBinding: ViewDataBinding
 ) : RecyclerView.ViewHolder(viewDataBinding.root) {
 
