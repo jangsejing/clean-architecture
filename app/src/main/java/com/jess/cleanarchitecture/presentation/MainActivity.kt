@@ -10,6 +10,7 @@ import com.jess.cleanarchitecture.R
 import com.jess.cleanarchitecture.common.adapter.BaseListAdapter
 import com.jess.cleanarchitecture.databinding.MainActivityBinding
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -43,6 +44,10 @@ class MainActivity : AppCompatActivity() {
         viewModel.run {
             list.observe(this@MainActivity, Observer {
                 adapter.submitList(it)
+            })
+
+            isLoading.observe(this@MainActivity, Observer {
+                Timber.d("isLoading $it")
             })
         }
     }

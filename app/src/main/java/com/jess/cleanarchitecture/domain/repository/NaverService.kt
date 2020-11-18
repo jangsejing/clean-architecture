@@ -17,7 +17,7 @@ interface NaverService {
     suspend fun getMovies(
         @Query("query") query: String?,
         @Query("start") start: Int = 1,
-        @Query("display") display: Int = 1000
+        @Query("display") display: Int = 50
     ): MovieResponse
 
 }

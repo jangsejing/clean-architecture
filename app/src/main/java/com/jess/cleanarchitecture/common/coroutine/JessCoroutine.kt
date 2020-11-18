@@ -11,23 +11,24 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
+import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-sealed class State {
-    object CoroutinesStarted : State()
-    class CoroutinesFinished(val throwable: Throwable?) : State()
+sealed class JessState {
+    object CoroutinesStarted : JessState()
+    class CoroutinesFinished(val throwable: Throwable?) : JessState()
 }
 
-sealed class Exception {
-    object NetworkError : Exception()
-    class Error(val code: String?, val error: ErrorResponse?) : Exception()
+sealed class JessException {
+    class Network(val exception: Exception) : JessException()
+    class Error(val code: String?, val error: ErrorResponse?) : JessException()
 }
 
 interface JessCoroutine {
 
-    val exception: LiveData<Exception>
-    val coroutineState: LiveData<State>
+    val exception: LiveData<JessException>
+    val coroutineState: LiveData<JessState>
 
     fun CoroutineScope.jessLaunch(
         context: CoroutineContext = EmptyCoroutineContext,
@@ -39,45 +40,45 @@ interface JessCoroutine {
 
 class JessCoroutineImpl : JessCoroutine {
 
-    private val _exception = MutableLiveData<Exception>()
-    override val exception: LiveData<Exception> get() = _exception
+    private val _exception = MutableLiveData<JessException>()
+    override val exception: LiveData<JessException> get() = _exception
 
-    private val _coroutineState = MutableLiveData<State>()
-    override val coroutineState: LiveData<State> get() = _coroutineState
+    private val _coroutineState = MutableLiveData<JessState>()
+    override val coroutineState: LiveData<JessState> get() = _coroutineState
 
     override fun CoroutineScope.jessLaunch(
         context: CoroutineContext,
         start: CoroutineStart,
         block: suspend CoroutineScope.() -> Unit
     ): Job = launch(context, start) {
-        _coroutineState.postValue(State.CoroutinesStarted)
+        _coroutineState.postValue(JessState.CoroutinesStarted)
         val result = runCatching {
             block()
         }.onFailure {
             _exception.postValue(it.toException())
         }
         _coroutineState.postValue(
-            State.CoroutinesFinished(
+            JessState.CoroutinesFinished(
                 result.exceptionOrNull()
             )
         )
     }
 }
 
-fun Throwable.toException(): Exception {
+fun Throwable.toException(): JessException {
     return when (this) {
         is IOException -> {
             Timber.d("IOException ${this.localizedMessage}")
-            Exception.NetworkError
+            JessException.Network(IOException())
         }
         is HttpException -> {
             val error = convertErrorBody(this)
             Timber.d("HttpException ${this.localizedMessage} / error $error")
-            Exception.Error(code().toString(), error)
+            JessException.Error(code().toString(), error)
         }
         else -> {
             Timber.d("Error ${this.localizedMessage}")
-            Exception.Error(null, null)
+            JessException.Error(null, null)
         }
     }
 }
