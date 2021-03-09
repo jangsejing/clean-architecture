@@ -11,7 +11,7 @@ class NaverRepositoryImpl @Inject constructor(
     private val remote: NaverService
 ) : NaverRepository {
 
-    override suspend fun getSearchMovie(query: String): MovieEntity {
+    override suspend fun getSearchMovie(query:      String): MovieEntity {
         return remote.getMovies(query).toEntity()
     }
 }

@@ -3,21 +3,26 @@ package com.jess.cleanarchitecture.presentation
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.DiffUtil
-import com.jess.cleanarchitecture.common.coroutine.JessCoroutine
-import com.jess.cleanarchitecture.common.coroutine.JessCoroutineImpl
-import com.jess.cleanarchitecture.common.coroutine.JessState
+import com.jess.cleanarchitecture.common.coroutine.StateCoroutine
+import com.jess.cleanarchitecture.common.coroutine.StateCoroutineImpl
+import com.jess.cleanarchitecture.common.coroutine.State
 import com.jess.cleanarchitecture.data.entity.ItemEntity
 import com.jess.cleanarchitecture.domain.usecase.SearchMoveUseCase
 
 class MainViewModel @ViewModelInject constructor(
     private val useCase: SearchMoveUseCase
-) : ViewModel(), JessCoroutine by JessCoroutineImpl() {
+) : ViewModel(), StateCoroutine by StateCoroutineImpl() {
 
     private val _list = MutableLiveData<List<ItemEntity>>()
     val list: LiveData<List<ItemEntity>> get() = _list
 
-    val isLoading = coroutineState.map {
-        it is JessState.CoroutinesStarted
+    val isLoading = MediatorLiveData<Boolean>().apply {
+        addSource(coroutineState) {
+            value = when (it) {
+                is State.CoroutinesStarted -> true
+                is State.CoroutinesFinished -> false
+            }
+        }
     }
 
     fun search(query: String?) {
